@@ -1,5 +1,6 @@
 # ApachePHP
-
+Intial setup
+---
 ```
 git clone https://github.com/Uepl/apaPHP.git
 
@@ -8,6 +9,7 @@ docker compose up --build -d
 
 SQL
 ---
+```
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -58,4 +60,4 @@ ALTER TABLE `majors`
 ALTER TABLE `students`
   ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`major_id`) REFERENCES `majors` (`major_id`);
 COMMIT;
----
+```
