@@ -1,0 +1,52 @@
+services:
+  php:
+    build:
+      context: .
+    ports:
+      - 9000:80
+    volumes:
+      - ./src:/var/www/html
+      - ./log:/var/log/apache2
+    depends_on: 
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - path: ./src
+          target: ./var/www/html
+          action: sync
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: my_database
+    ports:
+      - "3306:3306" 
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./dump:/docker-entrypoint-initdb.d
+      - ./conf:/etc/mysql/conf.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    links:
+      - db
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=db
+      - MYSQL_ROOT_PASSWORD=test
+
+volumes:
+  db_data:
+
